@@ -3,6 +3,8 @@ package auth_ems;
 import java.util.Scanner;
 
 import auth_validations.Login_validator;
+import ems_db.*;
+import main_page.MainDashboard;
 
 public class Login {
 
@@ -28,15 +30,31 @@ public class Login {
 		
 		Login_validator lg_validator = new Login_validator(username, password);
 		
+		
 		Boolean flag = lg_validator.validation();
 		
 		if(flag)
 		{
-			// db code check login values matches with db values
-			System.out.println("login succesfull");
+
+			EmsDataManipulation emDataManipulation = new EmsDataManipulation();
+			Boolean login = emDataManipulation.logDataInsert(username, password);
+			
+			if (login) {
+				System.out.println("\n\n\t\t\t********* Login Sucessfull *********\n\n");
+				
+				Ems_Db db = new Ems_Db();
+				db.empTable();
+								
+				MainDashboard md = new MainDashboard(username);
+				md.mainDashboard();
+			}
+			else {
+				System.out.println("\n\n\t\t\t********* Invalid Crediantials *********\n\n");
+			}
+			
 		}
 		else {
-			System.out.println("login unsucessfull");
+			System.out.println("\n\n\t\t\t********* Login Failed *********\n\n");
 		}
 		
 	}	

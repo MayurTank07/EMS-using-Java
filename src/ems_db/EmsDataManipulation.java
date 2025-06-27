@@ -4,6 +4,8 @@ import java.sql.*;
 
 public class EmsDataManipulation {
 
+//	crud operation 
+	
 	public void resDataInsert(String name, String email, String username, String password) {
 	    Connection conn = null;
 	    PreparedStatement pstmt = null;
@@ -46,10 +48,99 @@ public class EmsDataManipulation {
 	        }
 	    }
 	}
-
 		
-	public void logDataInsert(String username, String password)
-	{
-		//code
+	public boolean logDataInsert(String username, String password) {
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    boolean loginSuccess = false;
+
+	    try {
+	        // Load driver and connect to EMS_DB
+	        Class.forName("com.mysql.cj.jdbc.Driver");
+	        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/EMS_DB?user=root&password=root");
+
+	        // Check if username and password match in registration table
+	        String loginQuery = "SELECT * FROM registration WHERE username = ? AND password = ?";
+	        pstmt = conn.prepareStatement(loginQuery);
+	        pstmt.setString(1, username);
+	        pstmt.setString(2, password);
+
+	        rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	            loginSuccess = true;
+	        }
+
+	    } 
+	    catch (Exception e) 
+	    {
+	        System.out.println("Error during login check: " + e.getMessage());
+	    } 
+	    finally 
+	    {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (SQLException se) {
+	            System.out.println("Error closing resources: " + se.getMessage());
+	        }
+	    }
+
+	    return loginSuccess;
 	}
+	
+	public boolean addEmployee(int emp_id, String emp_name, float emp_sal, String emp_address,
+            String emp_phone, String emp_designation, String emp_dob,
+            String emp_doj, String emp_dol) {
+
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+			boolean isInserted = false;
+			
+			try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/EMS_DB?user=root&password=root");
+			
+			String query = "INSERT INTO employee (emp_id, emp_name, emp_sal, emp_address, emp_phone, emp_designation, emp_dob, emp_doj, emp_dol) "
+			      + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, emp_id);
+			pstmt.setString(2, emp_name);
+			pstmt.setFloat(3, emp_sal);
+			pstmt.setString(4, emp_address);
+			pstmt.setString(5, emp_phone);
+			pstmt.setString(6, emp_designation);
+			pstmt.setDate(7, java.sql.Date.valueOf(emp_dob));  // yyyy-MM-dd
+			pstmt.setDate(8, java.sql.Date.valueOf(emp_doj));  // yyyy-MM-dd
+			pstmt.setDate(9, java.sql.Date.valueOf(emp_dol));  // yyyy-MM-dd
+			
+			// Execute update
+			int rows = pstmt.executeUpdate();  
+			isInserted = rows > 0;
+
+			} 
+			catch (Exception e) 
+			{
+				System.out.println("Error inserting employee: " + e.getMessage());
+			} 
+			finally 
+			{
+				try 
+				{
+					if (pstmt != null) pstmt.close();
+					if (conn != null) conn.close();
+				} 
+				catch (SQLException se) 
+				{
+					System.out.println("Error closing resources: " + se.getMessage());
+				}
+			}
+			
+			return isInserted;
+	}
+
+
 }

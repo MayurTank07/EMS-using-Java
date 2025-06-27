@@ -88,5 +88,44 @@ public class Ems_Db {
         }
     }
 
+    public void empTable() {
+        Connection conn = null;
+        Statement stmt = null;
+
+        try {
+            // Load driver and connect to EMS_DB
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/EMS_DB?user=root&password=root");
+
+            stmt = conn.createStatement();
+
+            String createEmpTableQuery = "CREATE TABLE IF NOT EXISTS employee ("
+                    + "emp_id INT PRIMARY KEY,"
+                    + "emp_name VARCHAR(100) NOT NULL,"
+                    + "emp_sal FLOAT NOT NULL,"
+                    + "emp_address VARCHAR(200),"
+                    + "emp_phone VARCHAR(15),"
+                    + "emp_designation VARCHAR(100),"
+                    + "emp_doj DATE,"
+                    + "emp_dob DATE,"
+                    + "emp_dol DATE"
+                    + ")";
+
+            stmt.executeUpdate(createEmpTableQuery);
+
+//            System.out.println("Table 'employee' created or already exists.");
+
+        } catch (Exception e) {
+            System.out.println("Error creating employee table: " + e.getMessage());
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException se) {
+                System.out.println("Error closing resources: " + se.getMessage());
+            }
+        }
+    }
+
     
 }
