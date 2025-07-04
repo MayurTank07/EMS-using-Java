@@ -142,5 +142,46 @@ public class EmsDataManipulation {
 			return isInserted;
 	}
 
+	public boolean updateSingleField(int emp_id, String columnName, String newValue, boolean isNumericOrDate) {
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    boolean isUpdated = false;
+
+	    try {
+	        Class.forName("com.mysql.cj.jdbc.Driver");
+	        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/EMS_DB?user=root&password=root");
+
+	        String query = "UPDATE employee SET " + columnName + " = ? WHERE emp_id = ?";
+	        pstmt = conn.prepareStatement(query);
+
+	        if (isNumericOrDate) {
+	            if (columnName.equals("emp_sal")) {
+	                pstmt.setFloat(1, Float.parseFloat(newValue));
+	            } else {
+	                pstmt.setDate(1, java.sql.Date.valueOf(newValue));  // for dob, doj, dol
+	            }
+	        } else {
+	            pstmt.setString(1, newValue);
+	        }
+
+	        pstmt.setInt(2, emp_id);
+
+	        int rows = pstmt.executeUpdate();
+	        isUpdated = rows > 0;
+
+	    } catch (Exception e) {
+	        System.out.println("Error updating field: " + e.getMessage());
+	    } finally {
+	        try {
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (SQLException se) {
+	            System.out.println("Error closing resources: " + se.getMessage());
+	        }
+	    }
+
+	    return isUpdated;
+	}
+
 
 }

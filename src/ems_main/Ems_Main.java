@@ -10,7 +10,7 @@ public class Ems_Main {
 
 	public static void main(String[] args) {
 		
-		
+		do {
 		Scanner sc = new Scanner(System.in);
 		int choice;
 		
@@ -44,7 +44,7 @@ public class Ems_Main {
 		}
 		
 
-		
+		}while(true);
 	}
 
 }
