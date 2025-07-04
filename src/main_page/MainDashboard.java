@@ -173,8 +173,43 @@ public class MainDashboard {
 				    break;
 			
 			case 3:
-				// TODO: Show employee code
-				break;
+			    int showChoice;
+			    do {
+			        System.out.println("\n========= Show Employees Menu =========");
+			        System.out.println("1. Show All");
+			        System.out.println("2. Search by ID");
+			        System.out.println("3. Filter by Designation");
+			        System.out.println("4. Exit from show Menu");
+			        System.out.print("Enter your choice: ");
+			        showChoice = sc.nextInt();
+			        sc.nextLine();
+
+			        switch (showChoice) {
+			            case 1:
+			                emDataManipulation.showAllEmployees();
+			                break;
+			            case 2:
+			                System.out.print("Enter Employee ID to search: ");
+			                int searchId = sc.nextInt();
+			                sc.nextLine();
+			                emDataManipulation.searchEmployeeById(searchId);
+			                break;
+			            case 3:
+			                System.out.print("Enter Designation to filter: ");
+			                String desgFilter = sc.nextLine();
+			                emDataManipulation.filterEmployeesByDesignation(desgFilter);
+			                break;			        
+			            case 4:
+			                System.out.println("Exited from show menu");
+			                showChoice = 5;
+			                break;
+			            default:
+			                System.out.println("Invalid choice.");
+			        }
+
+			    } while (showChoice != 5);
+			    break;
+
 
 			case 4:
 				// TODO: Delete employee code
